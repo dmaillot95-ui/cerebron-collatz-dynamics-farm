@@ -1,0 +1,120 @@
+name: CEREBRON Collatz Dynamics Farm C256
+
+on:
+  push:
+    paths:
+      - '.github/workflows/dynamics-farm.yml'
+      - 'mission/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: plan
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          R=[
+          ('DYNAMICAL_SYSTEMS_SPECIALIST','llama3b','llama-3.2','first-exit/stay-out/first-reentry exact dynamics'),
+          ('FIRST_RETURN_SPECIALIST','gemma9b','gemma-2','derive exact first-return constraints and duration bounds'),
+          ('ERGODIC_ROTATION_SPECIALIST','gemma9b','gemma-2','irrational rotation and return-time theory'),
+          ('STURMIAN_RETURN_SPECIALIST','gemma9b','gemma-2','return words and mechanical critical codes'),
+          ('ARCHIMEDEAN_ANALYST','gemma9b','gemma-2','normalized window width c_W and affine corrections'),
+          ('REGENERATION_OPERATOR_SPECIALIST','gemma9b','gemma-2','band-entry regeneration kernel and spectral obstruction'),
+          ('EXCURSION_GEOMETRY_SPECIALIST','llama3b','llama-3.2','geometry of upward exits and reentries'),
+          ('LYAPUNOV_SPECIALIST','llama3b','llama-3.2','seek deterministic nonrecyclable Lyapunov resource'),
+          ('RECURRENCE_SPECIALIST','llama3b','llama-3.2','recurrence versus divergence constraints'),
+          ('BAND_DYNAMICS_SPECIALIST','llama3b','llama-3.2','dyadic band transitions and minimal-band geometry'),
+          ('COUNTEREXAMPLE_HUNTER','llama3b','llama-3.2','construct arbitrarily long positive-width episodes if possible'),
+          ('FALSIFIER','llama3b','llama-3.2','attack all proposed uniform bounds'),
+          ('COMPUTATIONAL_EXPERIMENTER','llama3b','llama-3.2','finite experiments only to falsify hypotheses'),
+          ('PROOF_CREATOR_A','llama3b','llama-3.2','constructive dynamics proof attempt'),
+          ('PROOF_CREATOR_B','gemma9b','gemma-2','independent obstruction theorem attempt'),
+          ('VERIFIER','gemma9b','gemma-2','rederive strongest lemma independently'),
+          ('FORMAL_PROOF_AUDITOR','gemma9b','gemma-2','audit quantifiers, asymptotics and arbitrary-N scope'),
+          ('COUNTER_AUDITOR','llama3b','llama-3.2','attack verifier and formal audit'),
+          ('SYNTHESIZER','gemma9b','gemma-2','merge only surviving dynamics claims'),
+          ('JUDGE','gemma9b','gemma-2','PROVED/REFUTED/HOLD and CYCLES OPEN unless complete closure')]
+          print('matrix='+json.dumps({'include':[{'role':r,'model_id':m,'family':f,'focus':x} for r,m,f,x in R]},separators=(',',':')))
+          PY
+
+  dynamics-agent:
+    needs: plan
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --quiet hf-gradio
+      - name: Execute dynamics agent
+        env:
+          ROLE: ${{ matrix.role }}
+          MODEL_ID: ${{ matrix.model_id }}
+          FAMILY: ${{ matrix.family }}
+          FOCUS: ${{ matrix.focus }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json,os,importlib.util,hashlib
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('fw','worker/farm_worker.py'); fw=importlib.util.module_from_spec(spec); spec.loader.exec_module(fw)
+          reg={'llama3b':'huggingface-projects/llama-3.2-3B-Instruct','gemma9b':'huggingface-projects/gemma-2-9b-it'}
+          role=os.environ['ROLE']; mid=os.environ['MODEL_ID']; fam=os.environ['FAMILY']; focus=os.environ['FOCUS']
+          mission=Path('mission/C256-DYNAMICS-FARM.md').read_text()
+          prompt=f'''CEREBRON OMEGA — COLLATZ DYNAMICS FARM\nROLE: {role}\nFOCUS: {focus}\n\n{mission}\n\nRULES: REALITY>COHERENCE; EVIDENCE>CONFIDENCE; CLAIM<=EVIDENCE; finite test != proof; mark PROVED/HYPOTHESIS/UNKNOWN; no CYCLES CLOSED without arbitrary-N contradiction.'''
+          ok,text,meta=fw.invoke(reg[mid],prompt)
+          result={'schema':'cerebron-dynamics-farm-c256-v1','role':role,'model_id':mid,'model_family':fam,'ok':bool(ok),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'meta':meta,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
+          Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dynamics-c256-${{ matrix.role }}
+          path: out/result.json
+          retention-days: 14
+
+  omega-fusion:
+    needs: dynamics-agent
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dynamics-c256-*
+          path: results
+          merge-multiple: false
+      - shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[]
+          for p in Path('results').rglob('result.json'):
+            try: rows.append(json.loads(p.read_text()))
+            except: pass
+          ok=[r for r in rows if r.get('ok')]
+          Path('dynamics-c256-accounting.json').write_text(json.dumps({'schema':'cerebron-dynamics-c256-omega-v1','artifact_rows':len(rows),'successful_external_ai_calls':len(ok),'successful_model_families':sorted({r.get('model_family') for r in ok}),'successful_roles':sorted({r.get('role') for r in ok}),'claim_note':'Unaudited until Master Hub verification.'},ensure_ascii=False,indent=2)+'\n')
+          Path('dynamics-c256-packet.txt').write_text('\n\n'.join('ROLE '+str(r.get('role'))+' | '+str(r.get('model_family'))+'\n'+str(r.get('response') or '') for r in ok))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dynamics-c256-omega-packet
+          path: |
+            dynamics-c256-accounting.json
+            dynamics-c256-packet.txt
+          retention-days: 14
