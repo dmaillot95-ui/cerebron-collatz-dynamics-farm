@@ -1,32 +1,19 @@
-# CEREBRON OMEGA — COLLATZ C256-C265 — DYNAMICS FARM
+# CEREBRON OMEGA — COLLATZ DYNAMICS FARM — CHECKPOINT 2026-09-17
 
-## Mission
-Étudier exclusivement la dynamique globale et first-return de l'application accélérée de Collatz sur les impairs positifs.
+MISSION: attack the arbitrary-N cycle problem through exact inter-run dynamics. Do not restart; do not claim solution without universal contradiction.
 
-## Checkpoint vérifié
-T(x)=(3x+1)/2^{v2(3x+1)}.
-Pour un mot de valuations a_0,...,a_{n-1}, A_k=sum_{i<k} a_i,
-2^{A_k}x_k=3^k x_0+C_k, C_0=0, C_{k+1}=3C_k+2^{A_k}.
-Les mots finis sont localement réalisables; cela ne prouve pas cycle ni first-return.
-Les profils mécaniques quasi critiques peuvent rester multiplicativement proches de 1 arbitrairement longtemps.
-Une fenêtre archimédienne de largeur c_W X+O(1), c_W>0, finit par rencontrer toute classe résiduelle fixe modulo 2^{A_n+1}.
-La structure mécanique est liée aux rotations irrationnelles/Sturmian return words.
-Le verrou global reste OPEN.
+Exact state:
+- Binary critical runs 1^{u_j}2^{r_j}; U=sum u_j, R=sum r_j, delta=R ln(4/3)-U ln(3/2)>0.
+- H-factorization: 3^{u_j}t_j-1=4^{r_j}h_j; 2^{u_{j+1}}t_{j+1}-1=3^{r_j}h_j.
+- H-COUPLING: 2^{u_{j+1}+2r_{j+1}}h_{j+1}-3^{u_{j+1}+r_j}h_j=3^{u_{j+1}}-2^{u_{j+1}}.
+- H-LOG: delta=sum ln[(1+(3^{r_j}h_j)^(-1))/(1+(4^{r_j}h_j)^(-1))].
 
-## Objectif unique
-Déterminer si des épisodes FIRST-RETURN réellement admissibles de longueur arbitraire peuvent exister avec largeur normalisée positive, en tenant compte de tout le profil affine et non du seul produit final.
+Primary target: study the transition map (u_j,r_j,h_j)->(u_{j+1},r_{j+1},h_{j+1}). Seek exact monotonicity, forbidden transitions, Lyapunov-like resources, regeneration obstructions, or a collective cost preventing cyclic closure.
 
-## Sous-tâches
-1. Définir exactement entrée, première sortie, séjour extérieur et première réentrée dans I_X=[X,2X).
-2. Écrire les contraintes simultanées sur x_0 pour tous les préfixes.
-3. Étudier la durée maximale d'une excursion quand les multiplicateurs partiels suivent un profil équilibré/Sturmien.
-4. Tester l'existence d'un UNIFORM ARC GAP dans la représentation par rotation.
-5. Chercher des familles quasi tangentielles où le complément d'arc tend vers 0.
-6. Étudier les opérateurs de régénération entre entrées successives dans une bande.
-7. Séparer rigoureusement existence locale de mots, existence d'épisodes, cycle et trajectoire divergente.
-8. Rechercher un invariant non recyclable lors des sorties/réentrées.
-9. Falsifier toute prétendue contraction uniforme par construction explicite si possible.
-10. Ne jamais conclure CYCLES CLOSED sans contradiction arbitraire-N complète.
+Mandatory tests: u=1, r=1, h=5,11,17; imprimitive words; negative/positive block compensation; counterexamples to any claimed uniform monotonicity.
 
-## Sortie attendue
-LEMMES PROUVÉS; CONTRE-EXEMPLES; BORNES DE TEMPS DE RETOUR; ARC GAP; FENÊTRE FIRST-RETURN; RÉGÉNÉRATION; GAPS; NEXTLOCK UNIQUE; VERDICT CYCLES OPEN/CLOSED.
+Firewall: if a derivation merely reconstructs Dx=C or D|C, classify EQUIVALENT-HARDNESS.
+
+ARITHMETIC COMPRESSION: SYMBOLIC REDUCTION BEFORE MULTIPLICATION. Use recurrence/caching for powers, factor common terms, eliminate variables before expansion, modular filters before big integers, and exact/logarithmic stable forms where justified. Report arithmetic cost before/after and proof of equivalence.
+
+Output: ESTABLISHED / NEW DYNAMIC LEMMA / COUNTEREXAMPLE / AUDIT / RESIDUAL / NEXTLOCK / STATUS. COMPUTATION != PROOF; FINITE TEST != UNIVERSAL PROOF.
