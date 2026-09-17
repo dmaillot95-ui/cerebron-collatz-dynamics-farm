@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
 
+# Initial dynamics farm trigger enabled.
 jobs:
   plan:
     runs-on: ubuntu-latest
