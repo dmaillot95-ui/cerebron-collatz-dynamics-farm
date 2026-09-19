@@ -1,15 +1,17 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 16,
+  "successful_external_ai_calls": 17,
   "successful_model_families": [
     "gemma-2",
     "llama-3.2"
   ],
   "successful_roles": [
+    "ARCHIMEDEAN_ANALYST",
     "BAND_DYNAMICS_SPECIALIST",
-    "COUNTEREXAMPLE_HUNTER",
+    "COMPUTATIONAL_EXPERIMENTER",
     "COUNTER_AUDITOR",
+    "DYNAMICAL_SYSTEMS_SPECIALIST",
     "ERGODIC_ROTATION_SPECIALIST",
     "EXCURSION_GEOMETRY_SPECIALIST",
     "FALSIFIER",
@@ -20,7 +22,6 @@
     "PROOF_CREATOR_A",
     "RECURRENCE_SPECIALIST",
     "REGENERATION_OPERATOR_SPECIALIST",
-    "STURMIAN_RETURN_SPECIALIST",
     "SYNTHESIZER",
     "VERIFIER"
   ],
