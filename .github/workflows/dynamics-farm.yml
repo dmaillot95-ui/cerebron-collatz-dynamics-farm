@@ -7,9 +7,12 @@ on:
       - '.github/workflows/dynamics-farm.yml'
       - 'mission/**'
   workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
 
 permissions:
   contents: write
+  actions: read
 
 # Initial dynamics farm trigger enabled.
 jobs:
