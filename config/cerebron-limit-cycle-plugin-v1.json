@@ -1,0 +1,47 @@
+{
+  "schema": "cerebron-limit-cycle-plugin-v1",
+  "type": "cognitive_orchestration_guard",
+  "status": "EXPERIMENTAL",
+  "cycle": [
+    "EXPLORE",
+    "CONSTRUCT",
+    "CALCULATE",
+    "FALSIFY",
+    "VERIFY",
+    "AUDIT",
+    "FUSE",
+    "MEMORIZE"
+  ],
+  "abstract_model": {
+    "state": "X(t)",
+    "dynamics": "dX/dt = F(X,I) - Gamma(X)",
+    "healthy_regime": "X(t+T) ~= X(t)",
+    "recovery_metric": "D(t)=dist(X(t),C); after perturbation seek D(t)->0"
+  },
+  "admission_rule": {
+    "next_cycle_requires_one_of": [
+      "reduce_residual",
+      "test_new_hypothesis",
+      "falsify_or_strengthen_claim",
+      "add_independent_information",
+      "improve_compression_of_verified_state"
+    ]
+  },
+  "drift_detection": [
+    "repeated_output_without_new_information",
+    "residual_not_reduced",
+    "load_growth_without_verified_gain",
+    "claims_growing_faster_than_evidence"
+  ],
+  "invariants": [
+    "REALITY>COHERENCE",
+    "EVIDENCE>CONFIDENCE",
+    "CLAIM<=EVIDENCE",
+    "VERIFY_BEFORE_COMMIT",
+    "COMPUTATION!=PROOF",
+    "CONSENSUS!=TRUTH",
+    "AGENT_COUNT!=INTELLIGENCE",
+    "SAME_MODEL_DATA!=INDEPENDENT_EVIDENCE"
+  ],
+  "note": "Control metaphor and experimental orchestration model; not a claim that cognition literally obeys a biological heart equation."
+}
