@@ -1,19 +1,32 @@
-# CEREBRON OMEGA — COLLATZ DYNAMICS FARM — CHECKPOINT 2026-09-17
+CEREBRON OMEGA — ONE-SHOT BENCHMARK — MATRIX MULTIPLICATION 3x3
 
-MISSION: attack the arbitrary-N cycle problem through exact inter-run dynamics. Do not restart; do not claim solution without universal contradiction.
+This is a temporary benchmark mission authorized by the owner. Do not use prior TEST 1 or TEST 2 answers.
 
-Exact state:
-- Binary critical runs 1^{u_j}2^{r_j}; U=sum u_j, R=sum r_j, delta=R ln(4/3)-U ln(3/2)>0.
-- H-factorization: 3^{u_j}t_j-1=4^{r_j}h_j; 2^{u_{j+1}}t_{j+1}-1=3^{r_j}h_j.
-- H-COUPLING: 2^{u_{j+1}+2r_{j+1}}h_{j+1}-3^{u_{j+1}+r_j}h_j=3^{u_{j+1}}-2^{u_{j+1}}.
-- H-LOG: delta=sum ln[(1+(3^{r_j}h_j)^(-1))/(1+(4^{r_j}h_j)^(-1))].
+QUESTION:
+Determine whether there exists an exact bilinear algorithm multiplying two 3x3 matrices using 22 scalar multiplications or fewer. If yes, provide the complete construction and exact verification. Otherwise, attempt a rigorous impossibility proof. If neither is established, give the strongest result actually established, tested avenues, and the precise remaining mathematical bottleneck.
 
-Primary target: study the transition map (u_j,r_j,h_j)->(u_{j+1},r_{j+1},h_{j+1}). Seek exact monotonicity, forbidden transitions, Lyapunov-like resources, regeneration obstructions, or a collective cost preventing cyclic closure.
+Each rank-r bilinear algorithm corresponds to:
+T_3,3,3 = sum_{l=1..r} u_l tensor v_l tensor w_l.
 
-Mandatory tests: u=1, r=1, h=5,11,17; imprimitive words; negative/positive block compensation; counterexamples to any claimed uniform monotonicity.
+For r=22, a raw parameterization has 22*(9+9+9)=594 coefficients. Any candidate must reconstruct all nine outputs exactly coefficient-by-coefficient.
 
-Firewall: if a derivation merely reconstructs Dx=C or D|C, classify EQUIVALENT-HARDNESS.
+AGENT INSTRUCTIONS:
+Use your assigned ROLE/FOCUS as a research specialization, but apply it to this matrix-tensor benchmark rather than Collatz.
+Construction roles: seek explicit <=22 decompositions, deformations of 23-product schemes, rank-1 replacements, sparse/rational/integer parameterizations, legitimate basis changes and symmetries.
+Alternative roles: tensor restrictions, polynomial systems, algebraic geometry, substitution methods, invariants, SAT/SMT/MILP formulations where exact.
+Calculation roles: formulate exact coefficient constraints; numerical output is only a search lead until exact reconstruction.
+Red-team roles: attack every <=22 candidate coefficient-by-coefficient; distinguish tensor rank from border rank; expose hidden field/symmetry/subfamily assumptions.
+Audit roles: classify PROVED / DERIVED / COMPUTED / OBSERVED / CONJECTURAL / REFUTED / UNKNOWN.
+Fusion/judge roles: preserve unresolved objections; consensus is not proof.
 
-ARITHMETIC COMPRESSION: SYMBOLIC REDUCTION BEFORE MULTIPLICATION. Use recurrence/caching for powers, factor common terms, eliminate variables before expansion, modular filters before big integers, and exact/logarithmic stable forms where justified. Report arithmetic cost before/after and proof of equivalence.
+VICTORY A requires a complete <=22 rank-1 decomposition plus exact reconstruction of all outputs.
+VICTORY B requires a universal rigorous lower bound rank(T_3,3,3)>=23 over an explicitly stated field.
+Failure to find a solution is not an impossibility proof.
 
-Output: ESTABLISHED / NEW DYNAMIC LEMMA / COUNTEREXAMPLE / AUDIT / RESIDUAL / NEXTLOCK / STATUS. COMPUTATION != PROOF; FINITE TEST != UNIVERSAL PROOF.
+REALITY>COHERENCE.
+EVIDENCE>CONFIDENCE.
+CLAIM<=EVIDENCE.
+COMPUTATION!=PROOF.
+FINITE SEARCH!=UNIVERSAL PROOF.
+SAME MODEL/DATA!=INDEPENDENT EVIDENCE.
+WORKFLOW SUCCESS!=SCIENTIFIC SUCCESS.
