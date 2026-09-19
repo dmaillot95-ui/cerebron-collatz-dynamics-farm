@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/dynamics-farm.yml'
       - 'mission/**'
+      - 'config/cerebron-agent-runtime-v1.json'
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
@@ -27,6 +28,7 @@ jobs:
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
+          contract=json.load(open('config/cerebron-agent-runtime-v1.json'))
           R=[
           ('DYNAMICAL_SYSTEMS_SPECIALIST','llama3b','llama-3.2','first-exit/stay-out/first-reentry exact dynamics'),
           ('FIRST_RETURN_SPECIALIST','gemma9b','gemma-2','derive exact first-return constraints and duration bounds'),
@@ -48,7 +50,13 @@ jobs:
           ('COUNTER_AUDITOR','llama3b','llama-3.2','attack verifier and formal audit'),
           ('SYNTHESIZER','gemma9b','gemma-2','merge only surviving dynamics claims'),
           ('JUDGE','gemma9b','gemma-2','PROVED/REFUTED/HOLD and CYCLES OPEN unless complete closure')]
-          print('matrix='+json.dumps({'include':[{'role':r,'model_id':m,'family':f,'focus':x} for r,m,f,x in R]},separators=(',',':')))
+          limit=int(contract['limits']['max_agents_per_wave'])
+          if len(R)>limit: raise SystemExit(f"agent matrix {len(R)} exceeds contract limit {limit}")
+          funcs=['A_CONSTRUCTION','B_ALTERNATIVE','C_CALCULATION','D_RED_TEAM','E_AUDIT','F_FUSION']
+          inc=[]
+          for i,(r,m,f,x) in enumerate(R):
+            inc.append({'agent_id':f'C256-A{i+1:02d}','role':r,'function':funcs[i%len(funcs)],'context_id':f'C256-CTX-{i+1:02d}','token_budget':800,'model_id':m,'family':f,'focus':x})
+          print('matrix='+json.dumps({'include':inc},separators=(',',':')))
           PY
 
   dynamics-agent:
@@ -70,6 +78,10 @@ jobs:
           MODEL_ID: ${{ matrix.model_id }}
           FAMILY: ${{ matrix.family }}
           FOCUS: ${{ matrix.focus }}
+          AGENT_ID: ${{ matrix.agent_id }}
+          AGENT_FUNCTION: ${{ matrix.function }}
+          CONTEXT_ID: ${{ matrix.context_id }}
+          TOKEN_BUDGET: ${{ matrix.token_budget }}
         shell: bash
         run: |
           set -euo pipefail
@@ -80,10 +92,11 @@ jobs:
           spec=importlib.util.spec_from_file_location('fw','worker/farm_worker.py'); fw=importlib.util.module_from_spec(spec); spec.loader.exec_module(fw)
           reg={'llama3b':'huggingface-projects/llama-3.2-3B-Instruct','gemma9b':'huggingface-projects/gemma-2-9b-it'}
           role=os.environ['ROLE']; mid=os.environ['MODEL_ID']; fam=os.environ['FAMILY']; focus=os.environ['FOCUS']
+          agent_id=os.environ['AGENT_ID']; agent_function=os.environ['AGENT_FUNCTION']; context_id=os.environ['CONTEXT_ID']; token_budget=int(os.environ['TOKEN_BUDGET'])
           mission=Path('mission/C256-DYNAMICS-FARM.md').read_text()
-          prompt=f'''CEREBRON OMEGA — COLLATZ DYNAMICS FARM\nROLE: {role}\nFOCUS: {focus}\n\n{mission}\n\nRULES: REALITY>COHERENCE; EVIDENCE>CONFIDENCE; CLAIM<=EVIDENCE; finite test != proof; mark PROVED/HYPOTHESIS/UNKNOWN; no CYCLES CLOSED without arbitrary-N contradiction.'''
+          prompt=f'''CEREBRON OMEGA — COLLATZ DYNAMICS FARM\nAGENT_ID: {agent_id}\nFUNCTION: {agent_function}\nCONTEXT_ID: {context_id}\nTOKEN_BUDGET: {token_budget}\nROLE: {role}\nFOCUS: {focus}\n\n{mission}\n\nRULES: REALITY>COHERENCE; EVIDENCE>CONFIDENCE; CLAIM<=EVIDENCE; finite test != proof; mark PROVED/HYPOTHESIS/UNKNOWN; no CYCLES CLOSED without arbitrary-N contradiction.'''
           ok,text,meta=fw.invoke(reg[mid],prompt)
-          result={'schema':'cerebron-dynamics-farm-c256-v1','role':role,'model_id':mid,'model_family':fam,'ok':bool(ok),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'meta':meta,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
+          result={'schema':'cerebron-dynamics-farm-c256-v1','agent_id':agent_id,'function':agent_function,'context_id':context_id,'token_budget':token_budget,'role':role,'model_id':mid,'model_family':fam,'ok':bool(ok),'response':text if ok else None,'response_sha256':hashlib.sha256(text.encode()).hexdigest() if ok and text else None,'meta':meta,'evidence_status':'UNREVIEWED_EXTERNAL_AGENT_OUTPUT' if ok else 'NO_EXTERNAL_OUTPUT'}
           Path('out/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
           PY
       - uses: actions/upload-artifact@v4
