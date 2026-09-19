@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 # Initial dynamics farm trigger enabled.
 jobs:
@@ -113,6 +113,22 @@ jobs:
           Path('dynamics-c256-accounting.json').write_text(json.dumps({'schema':'cerebron-dynamics-c256-omega-v1','artifact_rows':len(rows),'successful_external_ai_calls':len(ok),'successful_model_families':sorted({r.get('model_family') for r in ok}),'successful_roles':sorted({r.get('role') for r in ok}),'claim_note':'Unaudited until Master Hub verification.'},ensure_ascii=False,indent=2)+'\n')
           Path('dynamics-c256-packet.txt').write_text('\n\n'.join('ROLE '+str(r.get('role'))+' | '+str(r.get('model_family'))+'\n'+str(r.get('response') or '') for r in ok))
           PY
+      - name: Publish latest response count in repository
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p results-status
+          cp dynamics-c256-accounting.json results-status/latest-status.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results-status/latest-status.json
+          if git diff --cached --quiet; then
+            echo "No status change to publish."
+          else
+            git commit -m "Publish Hugging Face response count [skip ci]"
+            git push
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: dynamics-c256-omega-packet
