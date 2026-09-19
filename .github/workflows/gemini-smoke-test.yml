@@ -1,0 +1,80 @@
+name: Gemini isolated smoke test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gemini-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test one Gemini API call
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "GEMINI_API_KEY is missing"
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json, os, urllib.request, urllib.error
+
+          key = os.environ["GEMINI_API_KEY"]
+          models_url = "https://generativelanguage.googleapis.com/v1beta/models?key=" + key
+
+          try:
+              with urllib.request.urlopen(models_url, timeout=30) as r:
+                  data = json.load(r)
+          except urllib.error.HTTPError as e:
+              print("Gemini authentication/model-list test failed: HTTP", e.code)
+              raise SystemExit(1)
+
+          candidates = []
+          for m in data.get("models", []):
+              methods = m.get("supportedGenerationMethods", [])
+              if "generateContent" in methods:
+                  name = m.get("name", "")
+                  if name:
+                      candidates.append(name)
+
+          if not candidates:
+              print("Gemini key works, but no generateContent model was returned.")
+              raise SystemExit(1)
+
+          preferred = [
+              "models/gemini-2.5-flash",
+              "models/gemini-2.0-flash",
+          ]
+          model = next((m for m in preferred if m in candidates), candidates[0])
+          url = "https://generativelanguage.googleapis.com/v1beta/" + model + ":generateContent?key=" + key
+          body = json.dumps({
+              "contents": [{"parts": [{"text": "Reply with exactly: GEMINI_OK"}]}],
+              "generationConfig": {"maxOutputTokens": 20, "temperature": 0}
+          }).encode()
+
+          req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+          try:
+              with urllib.request.urlopen(req, timeout=45) as r:
+                  out = json.load(r)
+          except urllib.error.HTTPError as e:
+              print("Gemini generateContent test failed: HTTP", e.code)
+              raise SystemExit(1)
+
+          text = ""
+          try:
+              text = out["candidates"][0]["content"]["parts"][0]["text"].strip()
+          except Exception:
+              pass
+
+          print("Gemini model:", model)
+          print("Gemini response received:", bool(text))
+          if not text:
+              raise SystemExit(1)
+          print("GEMINI_SMOKE_TEST=PASS")
+          PY
