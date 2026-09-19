@@ -1,0 +1,57 @@
+{
+  "schema": "cerebron-agent-runtime-v1",
+  "purpose": "Logical-agent execution contract. One credential/account may serve multiple isolated logical agents; credentials never define agent identity.",
+  "limits": {
+    "max_agents_per_wave": 20,
+    "next_wave_requires_previous_clean": true,
+    "global_quota": true
+  },
+  "agent": {
+    "required": [
+      "agent_id",
+      "role",
+      "function",
+      "model_family",
+      "context_id",
+      "token_budget",
+      "allowed_tools",
+      "provenance"
+    ],
+    "functions": [
+      "A_CONSTRUCTION",
+      "B_ALTERNATIVE",
+      "C_CALCULATION",
+      "D_RED_TEAM",
+      "E_AUDIT",
+      "F_FUSION"
+    ]
+  },
+  "accounting": {
+    "required": [
+      "REQUESTED",
+      "STARTED",
+      "VALID",
+      "RATE_LIMIT",
+      "ERRORS",
+      "TOKENS"
+    ]
+  },
+  "rate_limit": {
+    "on_429": "STOP_AND_BACKOFF",
+    "credential_multiplication_to_bypass_quota": false,
+    "account_multiplication_to_bypass_quota": false
+  },
+  "secrets": {
+    "in_logs": false,
+    "in_artifacts": false,
+    "in_source": false,
+    "least_privilege": true,
+    "isolate_when_authentication_is_required": true
+  },
+  "evidence": [
+    "CLAIM<=EVIDENCE",
+    "SAME_MODEL_DATA!=INDEPENDENT_EVIDENCE",
+    "WORKFLOW_SUCCESS!=SCIENTIFIC_SUCCESS",
+    "AGENT_COUNT!=INTELLIGENCE"
+  ]
+}
