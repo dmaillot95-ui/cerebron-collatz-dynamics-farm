@@ -1,7 +1,7 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 17,
+  "successful_external_ai_calls": 19,
   "successful_model_families": [
     "gemma-2",
     "llama-3.2"
@@ -18,8 +18,10 @@
     "FALSIFIER",
     "FIRST_RETURN_SPECIALIST",
     "FORMAL_PROOF_AUDITOR",
+    "JUDGE",
     "LYAPUNOV_SPECIALIST",
-    "PROOF_CREATOR_B",
+    "PROOF_CREATOR_A",
+    "RECURRENCE_SPECIALIST",
     "REGENERATION_OPERATOR_SPECIALIST",
     "STURMIAN_RETURN_SPECIALIST",
     "SYNTHESIZER",
