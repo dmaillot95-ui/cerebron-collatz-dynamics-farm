@@ -1,14 +1,16 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 7,
+  "successful_external_ai_calls": 9,
   "successful_model_families": [
     "llama-3.2"
   ],
   "successful_roles": [
     "BAND_DYNAMICS_SPECIALIST",
     "COMPUTATIONAL_EXPERIMENTER",
-    "COUNTEREXAMPLE_HUNTER",
+    "COUNTER_AUDITOR",
+    "DYNAMICAL_SYSTEMS_SPECIALIST",
+    "EXCURSION_GEOMETRY_SPECIALIST",
     "FALSIFIER",
     "LYAPUNOV_SPECIALIST",
     "PROOF_CREATOR_A",
