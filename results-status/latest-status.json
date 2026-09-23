@@ -1,7 +1,7 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 19,
+  "successful_external_ai_calls": 18,
   "successful_model_families": [
     "gemma-2",
     "llama-3.2"
@@ -12,9 +12,8 @@
     "COMPUTATIONAL_EXPERIMENTER",
     "COUNTEREXAMPLE_HUNTER",
     "COUNTER_AUDITOR",
-    "ERGODIC_ROTATION_SPECIALIST",
+    "DYNAMICAL_SYSTEMS_SPECIALIST",
     "EXCURSION_GEOMETRY_SPECIALIST",
-    "FALSIFIER",
     "FIRST_RETURN_SPECIALIST",
     "FORMAL_PROOF_AUDITOR",
     "JUDGE",
