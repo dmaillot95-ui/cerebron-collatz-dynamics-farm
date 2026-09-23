@@ -23,8 +23,8 @@
     "PROOF_CREATOR_B",
     "RECURRENCE_SPECIALIST",
     "REGENERATION_OPERATOR_SPECIALIST",
-    "STURMIAN_RETURN_SPECIALIST",
-    "SYNTHESIZER"
+    "SYNTHESIZER",
+    "VERIFIER"
   ],
   "claim_note": "Unaudited until Master Hub verification."
 }
