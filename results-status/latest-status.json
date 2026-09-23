@@ -1,23 +1,24 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 11,
+  "successful_external_ai_calls": 12,
   "successful_model_families": [
     "gemma-2",
     "llama-3.2"
   ],
   "successful_roles": [
-    "BAND_DYNAMICS_SPECIALIST",
     "COMPUTATIONAL_EXPERIMENTER",
     "COUNTEREXAMPLE_HUNTER",
     "COUNTER_AUDITOR",
     "DYNAMICAL_SYSTEMS_SPECIALIST",
-    "EXCURSION_GEOMETRY_SPECIALIST",
     "FALSIFIER",
-    "LYAPUNOV_SPECIALIST",
+    "FIRST_RETURN_SPECIALIST",
+    "FORMAL_PROOF_AUDITOR",
+    "JUDGE",
     "PROOF_CREATOR_A",
     "RECURRENCE_SPECIALIST",
-    "REGENERATION_OPERATOR_SPECIALIST"
+    "REGENERATION_OPERATOR_SPECIALIST",
+    "VERIFIER"
   ],
   "claim_note": "Unaudited until Master Hub verification."
 }
