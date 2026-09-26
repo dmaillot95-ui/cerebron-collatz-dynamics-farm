@@ -1,14 +1,13 @@
 {
   "schema": "cerebron-dynamics-c256-omega-v1",
   "artifact_rows": 20,
-  "successful_external_ai_calls": 20,
+  "successful_external_ai_calls": 19,
   "successful_model_families": [
     "gemma-2",
     "llama-3.2"
   ],
   "successful_roles": [
     "ARCHIMEDEAN_ANALYST",
-    "BAND_DYNAMICS_SPECIALIST",
     "COMPUTATIONAL_EXPERIMENTER",
     "COUNTEREXAMPLE_HUNTER",
     "COUNTER_AUDITOR",
